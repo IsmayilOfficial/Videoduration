@@ -1,0 +1,90 @@
+---
+title: "Video Duration Analysis"
+author: "Ismayil Tahmazov"
+date: "September 27, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r library}
+
+#install.packages("plyr")
+library(plyr)
+library(tuber)
+library(tidyverse)
+library(lubridate)
+```
+
+
+
+```{r}
+app_id = 'Your app id'
+app_secret = 'your app secret'
+
+
+
+
+# establishing connecting with YouTube
+
+
+
+
+# credentials 
+
+yt_oauth(app_id = app_id, app_secret = app_secret)
+```
+
+```{r}
+videos<-read.csv("Pets_Animals2019Duration.csv")
+durations = lapply(as.character(videos$video_id), function(x){
+  ((get_video_details(video_id = x, part = "contentDetails"))$items)[[1]]$contentDetails$duration
+})
+durations
+
+
+
+```
+```{r}
+
+require(data.table)
+videos <- tail(fread("USvideos.csv",encoding = "UTF-8"),10000)
+durations = lapply(as.character(videos$video_id), function(x){
+  ((get_video_details(video_id = x, part = "contentDetails"))$items)[[1]]$contentDetails$duration
+})
+durations
+view(durations)
+```
+```{r}
+
+library(ggplot2)
+#videos<-read.csv("movies_duration.csv")
+dat<- read.csv('datasetGB31.03.2020.csv')
+#dat<- rbind(videos,dat)
+#write.csv(dat,"Film&Animation.csv")
+dat$Publisher<- NULL
+dat$Time <- NULL
+dat <- na.omit(dat)
+
+
+     
+
+
+
+## Basic histogram from the vector "rating". Each bin is .5 wide.
+## These both result in the same output:
+ #ggplot(dat, aes(x=duration)) + geom_histogram(binwidth=.5)
+# # # qplot(dat$rating, binwidth=.5)
+# # 
+# # # Draw with black outline, white fill
+#  ggplot(dat, aes(x=duration)) +
+#     geom_histogram(binwidth=.5, colour="black", fill="white")
+
+# Density curve
+ggplot(dat, aes(x=Duration)) + geom_density()
+```
+
